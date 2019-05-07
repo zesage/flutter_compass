@@ -1,0 +1,34 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_compass (0.0.1):
+    - Flutter
+  - location (0.0.1):
+    - Flutter
+  - sensors (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_compass (from `.symlinks/plugins/flutter_compass/ios`)
+  - location (from `.symlinks/plugins/location/ios`)
+  - sensors (from `.symlinks/plugins/sensors/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+  flutter_compass:
+    :path: ".symlinks/plugins/flutter_compass/ios"
+  location:
+    :path: ".symlinks/plugins/location/ios"
+  sensors:
+    :path: ".symlinks/plugins/sensors/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
+  flutter_compass: 39b27030ce86f943dae9c383cfe560c96d2e5ac6
+  location: 26c90953ad5916331d0d1d913898779910416487
+  sensors: 5e1d451d2b563766999e768342efed82d6141fcc
+
+PODFILE CHECKSUM: 4f63cb916e2346be908001f91c3d631892a9e1e8
+
+COCOAPODS: 1.5.3
