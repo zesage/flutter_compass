@@ -11,13 +11,14 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 
-void main() => runApp(
-      MaterialApp(
-        title: 'Compass',
-        theme: ThemeData(brightness: Brightness.dark),
-        home: HomePage(),
-      ),
-    );
+void main() {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  runApp(MaterialApp(
+    title: 'Compass',
+    theme: ThemeData.dark(),
+    home: HomePage(),
+  ));
+}
 
 class Anim {
   String name;
@@ -104,7 +105,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     compass = AniControler([
       Anim('dir', 0.0, 360.0, 30.0, true),
