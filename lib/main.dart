@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
   double lat, lon;
 
   String city = '', weather = '', icon = '01d';
-  double temp = 0.0, humidity = 0.0;
+  double temp = 0, humidity = 0;
 
   void getWeather() async {
     var key = '7c5c03c8acacd8dea3abd517ae22af34';
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  void setLocation(double lati, long, [bool weather = true]) {
+  void setLocation(double lati, double long, [bool weather = true]) {
     earth['lat'].value = lat = lati;
     earth['lon'].value = lon = long;
     if (weather) getWeather();
@@ -107,15 +107,15 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     compass = AniControler([
-      Anim('dir', 0.0, 360.0, 30.0, true),
-      Anim('hor', -9.6, 9.6, 20.0, false),
-      Anim('ver', -9.6, 9.6, 20.0, false),
+      Anim('dir', 0, 360, 30, true),
+      Anim('hor', -9.6, 9.6, 20, false),
+      Anim('ver', -9.6, 9.6, 20, false),
     ]);
 
     earth = AniControler([
-      Anim('dir', 0.0, 360.0, 20.0, true),
-      Anim('lat', -90.0, 90.0, 10.0, false),
-      Anim('lon', -180.0, 180.0, 0.5, true),
+      Anim('dir', 0, 360, 20, true),
+      Anim('lat', -90, 90, 1, false),
+      Anim('lon', -180, 180, 1, true),
     ]);
 
     FlutterCompass.events.listen((angle) {
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
       compass['ver'].value = -event.y;
     });
 
-    setLocation(0.0, 0.0);
+    setLocation(0, 0);
     Timer.periodic(Duration(seconds: 15), (t) {
       Location().getLocation().then((p) => setLocation(p.latitude, p.longitude));
     });
@@ -136,19 +136,19 @@ class _HomePageState extends State<HomePage> {
 
   Widget EarthActor() {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(city, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+      Text(city, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
       Text('lat:${lat.toStringAsFixed(2)}  lon:${lon.toStringAsFixed(2)}'),
       Expanded(
         child: GestureDetector(
-          onPanUpdate: (pan) => setLocation((lat - pan.delta.dy).clamp(-90.0, 90.0), (lon - pan.delta.dx + 180.0) % 360.0 - 180.0, false),
+          onPanUpdate: (pan) => setLocation((lat - pan.delta.dy).clamp(-90.0, 90.0), (lon - pan.delta.dx + 180) % 360 - 180, false),
           onPanEnd: (pan) => getWeather(),
           child: FlareActor("assets/earth.flr", animation: "pulse", controller: earth),
         ),
       ),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Container(width: 128.0, height: 128.0, child: FlareActor('assets/weather.flr', animation: icon)),
+        Container(width: 128, height: 128, child: FlareActor('assets/weather.flr', animation: icon)),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('${temp.toInt()}°', style: TextStyle(fontSize: 60.0)),
+          Text('${temp.toInt()}°', style: TextStyle(fontSize: 60)),
           Text(weather),
           Text('Humidity ${humidity.toInt()}%'),
         ]),
