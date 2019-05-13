@@ -32,6 +32,8 @@ class Anim {
 
 class AniControler implements FlareController {
   List<Anim> items;
+  AniControler(this.items);
+
   @override
   bool advance(FlutterActorArtboard board, double elapsed) {
     for (var a in items) {
@@ -58,21 +60,18 @@ class AniControler implements FlareController {
   @override
   void setViewTransform(Mat2D viewTransform) {}
 
-  AniControler(this.items);
-
   operator [](String name) {
     for (var a in items) if (a.name == name) return a;
   }
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  int mode = 0;
   AniControler compass;
   AniControler earth;
   double lat, lon;
@@ -134,7 +133,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget EarthActor() {
+  Widget Compass() {
+    return GestureDetector(
+      onTap: () => setState(() => mode++),
+      child: FlareActor("assets/compass.flr", animation: 'mode${mode % 2}', controller: compass),
+    );
+  }
+
+  Widget Earth() {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Text(city, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
       Text('lat:${lat.toStringAsFixed(2)}  lon:${lon.toStringAsFixed(2)}'),
@@ -162,10 +168,7 @@ class _HomePageState extends State<HomePage> {
       body: PageView(
         controller: PageController(viewportFraction: 0.8),
         scrollDirection: Axis.vertical,
-        children: [
-          FlareActor("assets/compass.flr", controller: compass),
-          EarthActor(),
-        ],
+        children: [Compass(), Earth()],
       ),
     );
   }
