@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sensors/sensors.dart';
 import 'package:flutter_compass/flutter_compass.dart';
-import 'package:flare_dart/math/mat2d.dart';
 import 'package:flare_flutter/flare.dart';
-import 'package:flare_flutter/flare_controller.dart';
+import 'package:flare_flutter/flare_controls.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
@@ -30,12 +29,13 @@ class Anim {
   set value(double v) => _value = (v - min) / (max - min);
 }
 
-class AniControler implements FlareController {
+class AniControl extends FlareControls {
   List<Anim> items;
-  AniControler(this.items);
+  AniControl(this.items);
 
   @override
   bool advance(FlutterActorArtboard board, double elapsed) {
+    super.advance(board, elapsed);
     for (var a in items) {
       if (a.actor == null) continue;
       var d = (a.pos - a._value).abs();
@@ -54,11 +54,9 @@ class AniControler implements FlareController {
 
   @override
   void initialize(FlutterActorArtboard board) {
+    super.initialize(board);
     items.forEach((a) => a.actor = board.getAnimation(a.name));
   }
-
-  @override
-  void setViewTransform(Mat2D viewTransform) {}
 
   operator [](String name) {
     for (var a in items) if (a.name == name) return a;
@@ -71,9 +69,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int mode = 0;
-  AniControler compass;
-  AniControler earth;
+  int mode = 0, map = 0;
+  AniControl compass;
+  AniControl earth;
   double lat, lon;
 
   String city = '', weather = '', icon = '01d';
@@ -105,13 +103,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    compass = AniControler([
-      Anim('dir', 0, 360, 30, true),
+    compass = AniControl([
+      Anim('dir', 0, 360, 45, true),
       Anim('hor', -9.6, 9.6, 20, false),
       Anim('ver', -9.6, 9.6, 20, false),
     ]);
 
-    earth = AniControler([
+    earth = AniControl([
       Anim('dir', 0, 360, 20, true),
       Anim('lat', -90, 90, 1, false),
       Anim('lon', -180, 180, 1, true),
@@ -146,9 +144,10 @@ class _HomePageState extends State<HomePage> {
       Text('lat:${lat.toStringAsFixed(2)}  lon:${lon.toStringAsFixed(2)}'),
       Expanded(
         child: GestureDetector(
+          onTap: () => setState(() => earth.play('mode${++map % 2}')),
           onPanUpdate: (pan) => setLocation((lat - pan.delta.dy).clamp(-90.0, 90.0), (lon - pan.delta.dx + 180) % 360 - 180, false),
-          onPanEnd: (pan) => getWeather(),
-          child: FlareActor("assets/earth.flr", animation: "pulse", controller: earth),
+          onPanEnd: (_) => getWeather(),
+          child: FlareActor("assets/earth.flr", animation: 'pulse', controller: earth),
         ),
       ),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
