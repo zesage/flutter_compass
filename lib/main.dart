@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -99,6 +98,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  void locate() => Location().getLocation().then((p) => setLocation(p.latitude, p.longitude));
+
   @override
   void initState() {
     super.initState();
@@ -126,9 +127,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     setLocation(0, 0);
-    Timer.periodic(Duration(seconds: 15), (t) {
-      Location().getLocation().then((p) => setLocation(p.latitude, p.longitude));
-    });
+    locate();
   }
 
   Widget Compass() {
@@ -145,6 +144,7 @@ class _HomePageState extends State<HomePage> {
       Expanded(
         child: GestureDetector(
           onTap: () => setState(() => earth.play('mode${++map % 2}')),
+          onDoubleTap: locate,
           onPanUpdate: (pan) => setLocation((lat - pan.delta.dy).clamp(-90.0, 90.0), (lon - pan.delta.dx + 180) % 360 - 180, false),
           onPanEnd: (_) => getWeather(),
           child: FlareActor("assets/earth.flr", animation: 'pulse', controller: earth),
